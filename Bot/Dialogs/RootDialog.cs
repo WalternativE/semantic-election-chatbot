@@ -6,26 +6,50 @@ using Microsoft.Bot.Connector;
 namespace Bot.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
-    {
-        public Task StartAsync(IDialogContext context)
-        {
+    public class RootDialog : IDialog<object> {
+
+        private string cityName { get; set; }
+
+
+        public Task StartAsync(IDialogContext context) {
             context.Wait(MessageReceivedAsync);
 
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
-        {
-            var activity = await result as Activity;
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result) {
+            await result;
+            await SendWelcomeMessageAsync(context);
 
-            // calculate something for us to return
-            int length = (activity.Text ?? string.Empty).Length;
 
-            // return our reply to the user
-            await context.PostAsync($"You sent {activity.Text} which was {length} characters.");
-
-            context.Wait(MessageReceivedAsync);
         }
+
+        private async Task SendWelcomeMessageAsync(IDialogContext context) {
+            await context.PostAsync($"Hallo ich bin dein FH Wahl Freund! Fangen wir an...");
+            context.Call(new ElectionCityDialog(), this.ElectionCityDialogAfter);
+        }
+
+       
+        private async Task ElectionCityDialogAfter(IDialogContext context, IAwaitable<string> result)
+        {
+            try
+            {
+                cityName = await result;
+                context.Call(new ElectionResultDialog(cityName),  ElectionResultDialogAfter);
+
+            }
+            catch (TooManyAttemptsException)
+            {
+                await context.PostAsync("Sorry, aber ich weißnicht was du genau möchtest. Fangen wir nochmals von vorne an.");
+
+                await this.SendWelcomeMessageAsync(context);
+            }
+        }
+
+        private async Task ElectionResultDialogAfter(IDialogContext context, IAwaitable<string> result) {
+            await context.PostAsync("So, ich hoffe das Ergebniss macht dich nicht depresiv.");
+            await SendWelcomeMessageAsync(context);
+        }
+
     }
 }
