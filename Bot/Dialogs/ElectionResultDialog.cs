@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Chronic;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -28,11 +31,14 @@ namespace Bot.Dialogs
 		private async Task SearchResults(IDialogContext context)
 		{
 			//todo search results from Gregors API
-			Thread.Sleep(TimeSpan.FromSeconds(4)); //fake api call
 			var res = BotDataProvider.Provider.Get2017Results("de");
 
 			await context.PostAsync("Die Ergebnisse wurden gefunden.");
-			await context.PostAsync("Österreich ist generell sehr rassistisch!!!");
+            res.OrderBy(x => x.BallotCount).ForEach(party => {
+                context.PostAsync($"{party.PartyLabel} => {party.BallotCount} Stimmen");
+
+            });
+
 		}
 
 	}
