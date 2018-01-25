@@ -54,3 +54,5 @@ let [<Literal>] res2013Query =
 open BotDataProvider.ProviderDetails
 
 insertLabelLang res2013Query "de"
+
+endpoint.QueryWithResultSet <| insertLabelLang res2013Query "de"

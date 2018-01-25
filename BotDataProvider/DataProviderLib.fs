@@ -11,13 +11,13 @@ type ElectorialResult =
 module internal ProviderDetails =
     let [<Literal>] results2017Query =
         @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {{
-            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],'{0}'"". }}
+            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],{0}"". }}
               wd:Q19311231 p:P726 [ ps:P726 ?kandidat; pq:P1111 ?stimme ].
             }}"
 
     let [<Literal>] results2013Query =
         @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {{
-            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],'{0}'"". }}
+            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],{0}"". }}
               wd:Q1386143 p:P726 [ ps:P726 ?kandidat; pq:P1111 ?stimme ].
             }}"
 
