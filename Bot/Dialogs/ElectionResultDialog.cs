@@ -29,7 +29,7 @@ namespace Bot.Dialogs
 		{
 			//todo search results from Gregors API
 			Thread.Sleep(TimeSpan.FromSeconds(4)); //fake api call
-			var res = BotDataProvider.Provider.Get2017Results();
+			var res = BotDataProvider.Provider.Get2017Results("de");
 
 			await context.PostAsync("Die Ergebnisse wurden gefunden.");
 			await context.PostAsync("Österreich ist generell sehr rassistisch!!!");

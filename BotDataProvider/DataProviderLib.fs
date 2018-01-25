@@ -10,16 +10,19 @@ type ElectorialResult =
 
 module internal ProviderDetails =
     let [<Literal>] results2017Query =
-        @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {
-            SERVICE wikibase:label { bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"". }
+        @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {{
+            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],'{0}'"". }}
               wd:Q19311231 p:P726 [ ps:P726 ?kandidat; pq:P1111 ?stimme ].
-            }"
+            }}"
 
     let [<Literal>] results2013Query =
-        @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {
-            SERVICE wikibase:label { bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"". }
+        @"SELECT ?kandidat ?kandidatLabel ?stimme WHERE {{
+            SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],'{0}'"". }}
               wd:Q1386143 p:P726 [ ps:P726 ?kandidat; pq:P1111 ?stimme ].
-            }"
+            }}"
+
+    let insertLabelLang query (labelLang : string) =
+        String.Format(query, labelLang)
 
     let endpoint = SparqlRemoteEndpoint (Uri("https://query.wikidata.org/sparql"))
 
@@ -40,13 +43,15 @@ module internal ProviderDetails =
 module Provider =
     open ProviderDetails
 
-    let Get2013Results () =
-        endpoint.QueryWithResultSet results2013Query
+    let Get2013Results labelLanguage =
+        insertLabelLang results2013Query labelLanguage
+        |> endpoint.QueryWithResultSet
         |> Seq.map toElectorialResult
         |> ResizeArray<ElectorialResult>
 
 
-    let Get2017Results () =
-        endpoint.QueryWithResultSet results2017Query
+    let Get2017Results labelLanguage =
+        insertLabelLang results2017Query labelLanguage
+        |> endpoint.QueryWithResultSet
         |> Seq.map toElectorialResult
         |> ResizeArray<ElectorialResult>
