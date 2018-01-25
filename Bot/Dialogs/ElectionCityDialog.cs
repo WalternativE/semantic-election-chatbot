@@ -9,6 +9,7 @@ namespace Bot.Dialogs {
 
         private int attempts = 2;
 
+      
         public async Task StartAsync(IDialogContext context) {
 
             await context.PostAsync("Von welchem Ort möchtest du Ergebnisse wissen?");
@@ -22,11 +23,7 @@ namespace Bot.Dialogs {
             if ((message.Text != null) && (message.Text.Trim().Length > 0)) {
                 var cityName = message.Text;
                 //todo check if cityName is a valid city! (gregors API)
-                var isCityValid = true;
 
-                if (!isCityValid && attempts <= 0) {
-                    context.Wait(MessageReceivedAsync);
-                }
                 context.Done(message.Text);
             }
             else {

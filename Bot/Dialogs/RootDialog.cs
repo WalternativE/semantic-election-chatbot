@@ -9,6 +9,7 @@ namespace Bot.Dialogs
     public class RootDialog : IDialog<object> {
 
         private string cityName { get; set; }
+        private string language { get; set; }
 
 
         public Task StartAsync(IDialogContext context) {
@@ -26,16 +27,22 @@ namespace Bot.Dialogs
 
         private async Task SendWelcomeMessageAsync(IDialogContext context) {
             await context.PostAsync($"Hallo ich bin dein FH Wahl Freund! Fangen wir an...");
-            context.Call(new ElectionCityDialog(), this.ElectionCityDialogAfter);
+            context.Call(new LanguageDialog(), LanguageDialogAfter);
+
         }
 
-       
+        private async Task LanguageDialogAfter(IDialogContext context, IAwaitable<string> result) {
+            language = await result;
+            context.Call(new ElectionCityDialog( ), this.ElectionCityDialogAfter);
+
+        }
+
         private async Task ElectionCityDialogAfter(IDialogContext context, IAwaitable<string> result)
         {
             try
             {
                 cityName = await result;
-                context.Call(new ElectionResultDialog(cityName),  ElectionResultDialogAfter);
+                context.Call(new ElectionResultDialog(cityName, language),  ElectionResultDialogAfter);
 
             }
             catch (TooManyAttemptsException)

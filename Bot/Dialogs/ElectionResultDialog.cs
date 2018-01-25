@@ -13,11 +13,12 @@ namespace Bot.Dialogs
 	public class ElectionResultDialog : IDialog<string>
 	{
 		private string CityName { get; }
+	    private string language { get; set; }
 
-		public ElectionResultDialog(string cityName)
-		{
-			CityName = cityName;
-		}
+        public ElectionResultDialog(string cityName, string language) {
+            CityName = cityName;
+            this.language = language;
+        }
 
 		public async Task StartAsync(IDialogContext context)
 		{
@@ -31,12 +32,11 @@ namespace Bot.Dialogs
 		private async Task SearchResults(IDialogContext context)
 		{
 			//todo search results from Gregors API
-			var res = BotDataProvider.Provider.Get2017Results("de");
+			var res = BotDataProvider.Provider.Get2017Results(language.Equals(LanguageDialog.English) ? "en" : "de");
 
 			await context.PostAsync("Die Ergebnisse wurden gefunden.");
-            res.OrderBy(x => x.BallotCount).ForEach(party => {
-                context.PostAsync($"{party.PartyLabel} => {party.BallotCount} Stimmen");
-
+            res.OrderBy(x => x.BallotCount).ForEach(async party => {
+                await context.PostAsync($"{party.PartyLabel} => {party.BallotCount} Stimmen");
             });
 
 		}

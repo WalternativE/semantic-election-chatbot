@@ -137,6 +137,7 @@
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\ElectionCityDialog.cs" />
     <Compile Include="Dialogs\ElectionResultDialog.cs" />
+    <Compile Include="Dialogs\LanguageDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
