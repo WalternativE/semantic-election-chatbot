@@ -31,15 +31,12 @@ namespace Bot.Dialogs
 
 		private async Task SearchResults(IDialogContext context)
 		{
-			//todo search results from Gregors API
 			var res = BotDataProvider.Provider.Get2017Results(language.Equals(LanguageDialog.English) ? "en" : "de");
 
 			await context.PostAsync("Die Ergebnisse wurden gefunden.");
-            res.OrderBy(x => x.BallotCount).ForEach(async party => {
-                await context.PostAsync($"{party.PartyLabel} => {party.BallotCount} Stimmen");
-            });
-
+		    foreach (var party in res.OrderBy(x => x.BallotCount)) {
+		        await context.PostAsync($"{party.PartyLabel} => {party.BallotCount} Stimmen");
+            }
 		}
-
 	}
 }
